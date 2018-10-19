@@ -5,6 +5,13 @@ const mongoose = require('mongoose');
 const config = require('./config/local');
 const userRoutes = require('./routes/user');
 
+mongoose.connect(config.DB_URI, {
+    useCreateIndex: true,
+    useNewUrlParser: true
+}).then(function(){
+    console.log('connected to db');
+});
+
 const app = express();
 
 app.use(bodyParser.json());
