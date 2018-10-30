@@ -25,7 +25,35 @@ exports.register = function (req, res) {
             });
     }
 
-    User.findOne({username: username}, function (error, user) {
+    if(password !== passwordConfirmation) {
+        return res.status(400).send(
+            {error:
+                {title: 'Password and password confirmation not match', detail: 'Check password and password confirmation'}
+            });
+    }
 
+    User.findOne({username: username}, function (error, user) {
+        if(error) {
+            return res.status(500).send(
+                {error:
+                    {title: 'DB error!', detail: 'Smth wrong when query database!'}
+                });
+        }
+        if(user){
+            return res.status(400).send(
+                {error:
+                    {title: 'User already exists!', detail: `Username with ${username} exists!`} //change to 'Username with '+ username + ' exists!'
+                });
+        }
+        const newUser = new User({username: username, password: password});
+        newUser.save(function (err) {
+            if(err){
+                return res.status(500).send(
+                    {error:
+                        {title: 'DB error!', detail: 'Smth wrong when save user!'}
+                    });
+            }
+            return res.json({username: newUser.username, _id: newUser._id});
+        })
     });
 };
