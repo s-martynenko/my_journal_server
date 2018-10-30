@@ -98,4 +98,41 @@ exports.login = function (req, res) {
                 });
         }
     })
+};
+
+exports.userInfo = function (req, res) {
+    const user = res.locals.user;
+    return res.json(user);
+};
+
+//Authentication middleware
+exports.authMiddleware = function (req, res, next) {
+    const token = req.headers.authorization;
+    if(token){
+        const userInfo = parseToken(token);
+        User.findById(userInfo.userId, function (err, user) {
+            if(err){
+                return res.status(500).send(
+                    {error:
+                        {title: 'DB error!', detail: 'Smth wrong when save user!'}
+                    });
+            }
+            if(user){
+                res.locals.user = user;
+                next();
+            } else {
+                return notAuthorized(res);
+            }
+        });
+    } else {
+    return notAuthorized(res);
+    }
+};
+
+function parseToken(token) {
+    return jwt.verify(token.split(' ')[1], config.secret_key);
+}
+
+function notAuthorized(res) {
+    return res.status(403).send({error: {title: 'Not authorized!', detail: 'You need login'}});
 }
