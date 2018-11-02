@@ -1,22 +1,21 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const habitEventSchema = new Schema({
-    checked: {
-        type: Boolean,
-        default: false,
-        required: "Checked value is required - default value is FALSE"
-    }
-});
-
 const habitArraySchema = new Schema({
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    },
+    lastDay: {
+        type: Date,
+        required: "Date is required"
+    },
     title: {
         type: String,
         required: "Title is required",
         max: [280, 'Max 280 symbols']
     },
-    tracking: [habitEventSchema]
+    tracking: [Boolean]
 });
 
-module.exports = mongoose.model('HabitEvent', habitEventSchema);
 module.exports = mongoose.model('HabitArray', habitArraySchema);

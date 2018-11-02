@@ -18,7 +18,9 @@ const userSchema = new Schema({
     photoUrl: {
         type: String,
         max: [120, 'Max 120 symbols']
-    }
+    },
+    events: [{type: Schema.Types.ObjectId, ref: 'Event'}],
+    habits: [{type: Schema.Types.ObjectId, ref: 'HabitArray'}]
 
 });
 
