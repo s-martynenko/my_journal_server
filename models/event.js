@@ -13,8 +13,7 @@ const eventSchema = new Schema({
     },
     date: {
         type: Date,
-        default: Date.now,
-        required: "Date is required - default value is the created date"
+        default: Date.now
     }
 });
 
