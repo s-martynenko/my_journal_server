@@ -89,7 +89,7 @@ exports.deleteHabit = function (req, res) {
         if(habit){
             User.updateOne(
                 {_id: user.id},
-                {$pull: {habits: {_id: habit.id}}}, function (err) {
+                {$pull: {habits: habit.id}}, function (err) {
                     if(err){
                         console.log(err);
                         return res.status(500).send(

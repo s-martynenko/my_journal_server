@@ -82,7 +82,7 @@ exports.deleteEvent = function (req, res) {
         if(event){
             User.updateOne(
                 {_id: user.id},
-                {$pull: {events: {_id: event.id}}}, function (err) {
+                {$pull: {events: event.id}}, function (err) {
                     if(err){
                         console.log(err);
                         return res.status(500).send(
