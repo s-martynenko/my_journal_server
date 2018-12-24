@@ -105,6 +105,55 @@ exports.userInfo = function (req, res) {
     return res.json(user);
 };
 
+exports.changePassword = function (req, res) {
+    const user = res.locals.user;
+    const oldPassword = req.body.oldPassword;
+    const newPassword = req.body.newPassword;
+    const passwordConfirmation = req.body.passwordConfirmation;
+
+    if (!helpers.checkStringNotEmpty(oldPassword)) {
+        return res.status(400).send(
+            {error:
+                {title: 'Old password is empty', detail: 'Provide old password'}
+            });
+    }
+    if (!helpers.checkStringNotEmpty(newPassword)) {
+        return res.status(400).send(
+            {error:
+                {title: 'New password is empty', detail: 'Provide new password'}
+            });
+    }
+    if (!helpers.checkStringNotEmpty(passwordConfirmation)) {
+        return res.status(400).send(
+            {error:
+                {title: 'Password confirmation is empty', detail: 'Provide password confirmation'}
+            });
+    }
+    if(newPassword !== passwordConfirmation) {
+        return res.status(400).send(
+            {error:
+                {title: 'New password and password confirmation not match', detail: 'Check new password and password confirmation'}
+            });
+    }
+    if(!user.hasSamePassword(oldPassword)){
+        return res.status(401).send(
+            {error:
+                {title: 'Incorrect old password!', detail: 'Provide correct old password for user!'}
+            });
+    }
+
+    user.password = newPassword;
+    user.save(function (err) {
+            if(err){
+                return res.status(500).send(
+                    {error:
+                        {title: 'DB error!', detail: 'Smth wrong when save user!'}
+                    });
+            }
+            return res.json({username: user.username, _id: user._id});
+        });
+};
+
 //Authentication middleware
 exports.authMiddleware = function (req, res, next) {
     const token = req.headers.authorization;
