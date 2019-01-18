@@ -154,6 +154,23 @@ exports.changePassword = function (req, res) {
         });
 };
 
+exports.changePhoto = function (req, res) {
+    const user = res.locals.user;
+    const photoUrl = req.body.photoUrl;
+
+    user.photoUrl = photoUrl;
+
+    user.save(function (err) {
+        if(err){
+            return res.status(500).send(
+                {error:
+                    {title: 'DB error!', detail: 'Smth wrong when save user!'}
+                });
+        }
+        return res.json({username: user.username, _id: user._id});
+    });
+};
+
 //Authentication middleware
 exports.authMiddleware = function (req, res, next) {
     const token = req.headers.authorization;
