@@ -160,15 +160,18 @@ exports.changePhoto = function (req, res) {
 
     user.photoUrl = photoUrl;
 
-    user.save(function (err) {
-        if(err){
-            return res.status(500).send(
-                {error:
-                    {title: 'DB error!', detail: 'Smth wrong when save user!'}
-                });
-        }
-        return res.json({username: user.username, _id: user._id});
-    });
+    User.updateOne(
+            {_id: user.id},
+            {$set: {photoUrl: photoUrl}},
+            function (err) {
+                if(err){
+                    return res.status(500).send(
+                        {error:
+                            {title: 'DB error!', detail: 'Smth wrong when save user!'}
+                        });
+                }
+                return res.json({username: user.username, _id: user._id});
+            });
 };
 
 //Authentication middleware
