@@ -170,7 +170,7 @@ exports.changePhoto = function (req, res) {
                             {title: 'DB error!', detail: 'Smth wrong when save user!'}
                         });
                 }
-                return res.json({username: user.username, _id: user._id});
+                return res.json({username: user.username, _id: user._id, photoUrl: user.photoUrl});
             });
 };
 
