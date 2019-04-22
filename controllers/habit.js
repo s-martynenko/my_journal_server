@@ -24,11 +24,7 @@ exports.newHabit = function (req, res) {
     const newHabit = new Habit({user: user, lastDay: lastDay, title: title, tracking: tracking});
     newHabit.save(function (err) {
         if(err){
-            console.log(err);
-            return res.status(500).send(
-                {error:
-                    {title: 'DB error!', detail: 'Smth wrong when save habit!'}
-                });
+            return res.status(500).send(helpers.getDBErrors(err.errors));
         }
         User.updateOne(
             {_id: user.id},
@@ -152,10 +148,7 @@ exports.changeHabit = function (req, res) {
             habit.tracking = tracking;
             habit.save(function (err) {
                 if(err){
-                    return res.status(500).send(
-                        {error:
-                            {title: 'DB error!', detail: 'Smth wrong when save habit!'}
-                        });
+                    return res.status(500).send(helpers.getDBErrors(err.errors));
                 }
             });
             return res.json(habit);

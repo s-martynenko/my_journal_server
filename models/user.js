@@ -6,18 +6,18 @@ const userSchema = new Schema({
    username: {
        type: String,
        required:'Username is required',
-       min: [4, 'Minimum 4 symbols'],
-       max: [50, 'Max 50 symbols']
+       minlength: [4, 'Minimum 4 symbols'],
+       maxlength: [50, 'Max 50 symbols']
    },
     password: {
         type: String,
         required:'Password is required',
-        min: [4, 'Minimum 4 symbols'],
-        max: [50, 'Max 50 symbols']
+        minlength: [4, 'Minimum 4 symbols'],
+        maxlength: [50, 'Max 50 symbols']
     },
     photoUrl: {
         type: String,
-        max: [120, 'Max 120 symbols']
+        maxlength: [120, 'Max 120 symbols']
     },
     events: [{type: Schema.Types.ObjectId, ref: 'Event'}],
     habits: [{type: Schema.Types.ObjectId, ref: 'HabitArray'}]

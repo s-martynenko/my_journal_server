@@ -13,7 +13,7 @@ const habitArraySchema = new Schema({
     title: {
         type: String,
         required: "Title is required",
-        max: [280, 'Max 280 symbols']
+        maxlength: [280, 'Max 280 symbols']
     },
     tracking: [Boolean]
 });

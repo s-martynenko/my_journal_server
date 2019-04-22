@@ -5,6 +5,15 @@ module.exports = {
             return false;
         }
         return true;
-    }
+    },
 
+    getDBErrors: function(errors) {
+        var normalizeErrors = [];
+        for (var property in errors) {
+            if (errors.hasOwnProperty(property)) {
+                normalizeErrors.push({title: "Error in: "+property, detail: errors[property].message});
+            }
+        }
+        return normalizeErrors;
+    }
 };

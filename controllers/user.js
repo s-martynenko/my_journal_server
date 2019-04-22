@@ -50,10 +50,7 @@ exports.register = function (req, res) {
         const newUser = new User({username: username, password: password});
         newUser.save(function (err) {
             if(err){
-                return res.status(500).send(
-                    {error:
-                        {title: 'DB error!', detail: 'Smth wrong when save user!'}
-                    });
+                return res.status(500).send(helpers.getDBErrors(err.errors));
             }
             return res.json({username: newUser.username, _id: newUser._id});
         })
@@ -145,10 +142,7 @@ exports.changePassword = function (req, res) {
     user.password = newPassword;
     user.save(function (err) {
             if(err){
-                return res.status(500).send(
-                    {error:
-                        {title: 'DB error!', detail: 'Smth wrong when save user!'}
-                    });
+                return res.status(500).send(helpers.getDBErrors(err.errors));
             }
             return res.json({username: user.username, _id: user._id});
         });

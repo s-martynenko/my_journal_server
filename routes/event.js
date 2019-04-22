@@ -9,5 +9,6 @@ router.get('/event', userCtrl.authMiddleware, eventCtrl.allEvents);
 router.get('/event/:id', eventCtrl.getEvent);
 router.delete('/event/:id', userCtrl.authMiddleware, eventCtrl.deleteEvent);
 router.patch('/event/:id', userCtrl.authMiddleware, eventCtrl.changeEvent);
+router.get('/month-event', userCtrl.authMiddleware, eventCtrl.monthEvents);
 
 module.exports = router;

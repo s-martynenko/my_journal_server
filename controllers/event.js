@@ -3,6 +3,8 @@ const helpers = require('../helpers/functions');
 const User = require('../models/user');
 const Event = require('../models/event');
 
+const moment = require('moment');
+
 exports.newEvent = function (req, res) {
     const user = res.locals.user;
     const title = req.body.title;
@@ -17,11 +19,7 @@ exports.newEvent = function (req, res) {
     const newEvent = new Event({user: user, title: title, date: date});
     newEvent.save(function (err) {
         if(err){
-            console.log(err);
-            return res.status(500).send(
-                {error:
-                    {title: 'DB error!', detail: 'Smth wrong when save event!'}
-                });
+            return res.status(500).send(helpers.getDBErrors(err.errors));
         }
         User.updateOne(
             {_id: user.id},
@@ -52,6 +50,39 @@ exports.allEvents = function (req, res) {
         }
     });
 
+};
+
+exports.monthEvents = function (req, res) {
+    const user = res.locals.user;
+    const date = req.body.date;
+
+    if (!helpers.checkStringNotEmpty(date)) {
+        return res.status(400).send(
+            {error:
+                {title: 'Date is empty', detail: 'Provide date for finding month events'}
+            });
+    }
+
+    const monthDates = getMonthDates(date);
+
+    if (monthDates.length === 0) {
+        return res.status(400).send(
+            {error:
+                {title: 'Invalid date format', detail: 'Provide right date for finding month events'}
+            });
+    }
+
+    Event.find({user: user, date: {$gte: monthDates[0], $lte: monthDates[1]}}, function (err, events) {
+        if(err) {
+            return res.status(500).send(
+                {error:
+                    {title: 'DB error!', detail: 'Smth wrong when find events!'}
+                });
+        }
+        if (events){
+            return res.json(events);
+        }
+    });
 };
 
 exports.getEvent = function (req, res) {
@@ -143,13 +174,21 @@ exports.changeEvent = function (req, res) {
             event.date = date;
             event.save(function (err) {
                 if(err){
-                    return res.status(500).send(
-                        {error:
-                            {title: 'DB error!', detail: 'Smth wrong when save event!'}
-                        });
+                    return res.status(500).send(helpers.getDBErrors(err.errors));
                 }
             });
             return res.json(event);
     }
     });
 };
+
+function getMonthDates(dateStr) {
+    var firstDayOfMonth, lastDayOfMonth;
+    var monthInterval = [];
+    if(moment(dateStr).isValid()){
+        firstDayOfMonth = moment(dateStr).format("YYYY-MM-01");
+        lastDayOfMonth = moment(dateStr).format("YYYY-MM-") + moment(dateStr).daysInMonth();
+        monthInterval.push(firstDayOfMonth,lastDayOfMonth);
+    }
+    return monthInterval;
+}
